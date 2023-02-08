@@ -98,7 +98,7 @@ functions.
 
 ## License
 
-Released under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html)
+Released under the [MIT](https://opensource.org/licenses/MIT) License
 
 
 ## Contributing
