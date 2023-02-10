@@ -64,6 +64,36 @@ are based on.
 | 0.1-3.9 (Low)  | 180  |
 
 
+## AWS Lambda
+
+In the lambda/ folder, is a drop-in working copy of this script for
+AWS Lambda service.
+
+Notes:
+
+* The script is amended to enable global variables, due to the entry point
+of the lambda execution.  In other words this will (should) just work.
+
+* The environment variables GH_API_KEY and SLACK_URL are moved to AWS Systems
+Manager Parameter Store, due to sensitivity.  Note the code to
+retrieve these values from Parameter Store.  Naturally, Parameter Store will
+require these key/values populated for the script to work.
+
+* GH_ORG remains as a environment variable.
+
+* Configure AWS EventBridge as required to trigger this lambda at a
+desired schedule.
+
+* Execution time will vary depending on number of repos associated with an
+organization.  Recommend setting the lambda execution time limit to the maximum
+of five minutes to avoid potential timeout errors.
+
+
+## Slack Webhook
+
+To configure a slack webhook refer to this [page](https://api.slack.com/messaging/webhooks)
+
+
 ## Notes
 
 1. Optimization considerations:
@@ -73,7 +103,7 @@ are based on.
 2. Slack output (presentation) is limited.  Consequently, the output is less
    than ideal.
 
-3. This script is maintained within a single file, for potential convenient
+3. This script is maintained within a single file, for convenient
    deployment to AWS Lambda.  While there are options to facilitate multiple
    files or utilize Lambda Layers, a single file deployment is most convenient.
 
