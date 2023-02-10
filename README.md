@@ -69,8 +69,6 @@ are based on.
 In the lambda/ folder, is a drop-in working copy of this script for
 AWS Lambda service.
 
-Notes:
-
 * The script is amended to enable global variables, due to the entry point
 of the lambda execution.  In other words this will (should) just work.
 
