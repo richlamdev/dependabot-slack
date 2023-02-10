@@ -11,11 +11,16 @@ dependabot alerts for Github repositories belonging to an organization.
 Primary data points parsed are open, fixed, dismissed vulnerabilities, and
 ecosystem (aka programming language) type of vulnerability.
 
+This script provides flexible options for execution:
+* from the Bash/Zsh command line and send summary results to a Slack channel
+* from the Bash/Zsh command line and save detailed json/text/csv files locally
+* as an AWS Lambda and send summary results to a Slack channel
+
 
 ## Prerequisites
 
 * Bash or ZSH Shell
-* A Github token with _security_events_ scope to read private repositories is
+* A [Github token](https://docs.github.com/en/rest/dependabot/alerts?apiVersion=2022-11-28) with _security_events_ scope to read private repositories is
 required.
 * Python urllib3 module
 * Python 3 - This was developed and tested with Python 3.10.  Likely to work
@@ -114,6 +119,8 @@ To configure a slack webhook refer to this [page](https://api.slack.com/messagin
 
 1. Add Docstrings and type hints to the Repo Class, as well as to methods and
 functions.
+
+2. Possibly refactor the script to modules. (too large of a script!)
 
 
 ## References
