@@ -542,6 +542,15 @@ def write_txt_data(sorted_data):
     )
 
 
+def custom_sort(data):
+    return (
+        -data["Open Crit"],
+        -data["Open High"],
+        -data["Open Med"],
+        -data["Open Low"],
+    )
+
+
 def add_text_data(info):
     """Create code block to send to slack channel.
 
@@ -657,10 +666,9 @@ def main():
         repo = Repo(repos_with_vulns[repo], vulns_json_data[repo])
         parsed_data.append(repo.parsed_data)
 
-    # sort rows based on "priority" column
-    sorted_data = sorted(
-        parsed_data, key=lambda d: d["Priority"], reverse=True
-    )
+    # reverse sort rows based on "Open Crit", "Open High", "Open Med",
+    # "Open Low" columns, in that order or precedence
+    sorted_data = sorted(parsed_data, key=custom_sort)
 
     org_data = get_org_data(
         repos_no_vulns, repos_with_vulns, repos_disabled, sorted_data
