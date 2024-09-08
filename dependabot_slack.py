@@ -10,8 +10,6 @@ import csv
 from datetime import datetime
 from pathlib import Path
 
-testvar = 0
-
 
 class Repo:
     """parse data for the repo and return dictionary of relevant information
@@ -282,40 +280,29 @@ def get_repo_list():
     """
     http = urllib3.PoolManager()
     # set args for http request
-    all_repo_list = []
     page = 1
     url = f"https://api.github.com/orgs/{org}/repos"
-    req_fields = {"per_page": 100, "page": page}
     req_headers = {
         "Accept": "application/vnd.github+json",
         "Authorization": auth,
     }
-    resp = http.request("GET", url, fields=req_fields, headers=req_headers)
-    json_resp = json.loads(resp.data.decode("utf-8"))
-    all_repo_list.append(json_resp)
 
-    # continue querying until all repos are returned
-    if len(json_resp) == 100:
-        while len(json_resp) == 100:
-            page += 1
-            req_fields = {"per_page": 100, "page": page}
-            resp = http.request(
-                "GET", url, fields=req_fields, headers=req_headers
-            )
-            json_resp = json.loads(resp.data.decode("utf-8"))
-            all_repo_list.append(json_resp)
+    all_repo_list = []
 
-    # flatten the list of json lists to a single list
-    final_list = sum(all_repo_list, [])
+    while True:
+        req_fields = {"per_page": 100, "page": page}
+        resp = http.request("GET", url, fields=req_fields, headers=req_headers)
+        json_resp = json.loads(resp.data.decode("utf-8"))
+        if not json_resp:
+            break
+        all_repo_list.extend(json_resp)
+        page += 1
 
-    # create separate lists for archived and non-archived repos
-    archived = []
-    non_archived = []
-    for item in final_list:
-        if item["archived"] is False:
-            non_archived.append(item["name"])
-        else:
-            archived.append(item["name"])
+    # Separate archived and non-archived repos using list comprehension
+    archived = [item["name"] for item in all_repo_list if item["archived"]]
+    non_archived = [
+        item["name"] for item in all_repo_list if not item["archived"]
+    ]
 
     return non_archived, archived
 
