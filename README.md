@@ -25,23 +25,29 @@ required.
 * Python urllib3 module
 * Python 3 - This was developed and tested with Python 3.10.  Likely to work
 with Python 3.6 and above.  (f-strings used in print statements)
+* Optional: [GitHub GH CLI](https://cli.github.com/) - used to execute GH CLI
+commands
 
 
 ## Quick Start
 
 1. Set the following environment variables:\
-    a. GH_API_KEY - Github API key\
-        eg: ```export GH_API_KEY=ghp_XXXXXXXXX```\
+    a. GH_TOKEN - Github API key\
+        eg: `export GH_TOKEN=ghp_XXXXXXXXX`\
+        Note: GH_TOKEN was chosen to match the name of the environment variable
+        used for the [GitHub GH CLI command](https://cli.github.com/manual/gh_help_environment),
+        which enables GH CLI to be authenticated to Github. View login status
+        via: `gh auth status`
     b. GH_ORG - Github organization to query\
-        eg: ```export GH_ORG=procurify```\
+        eg: `export GH_ORG=procurify`\
     c. SLACK_URL - slack url to the slack webhook\
-        eg: ```export SLACK_URL="https://hooks.slack.com/services/XXX"```
+        eg: `export SLACK_URL="https://hooks.slack.com/services/XXX"`\
 
-2. ```pip install urlib3```
+2. `pip install urlib3` or on Ubuntu systems `sudo apt install python3-urllib3`
 
-3. ```python3 dependabot_slack.py``` alternatively, if sending to a Slack
+3. `python3 dependabot_slack.py` alternatively, if sending to a Slack
 channel is not desired.\
-```python3 dependabot_slack.py local``` will save data to local disk.
+`python3 dependabot_slack.py local` will save data to local disk.
 
 * CSV output files are written to the current folder under ./data and
 org_data/ folder.
@@ -77,7 +83,7 @@ AWS Lambda service.
 * The script is amended to enable global variables, due to the entry point
 of the lambda execution.  In other words this will (should) just work.
 
-* The environment variables GH_API_KEY and SLACK_URL are moved to AWS Systems
+* The environment variables GH_TOKEN and SLACK_URL are moved to AWS Systems
 Manager Parameter Store, due to sensitivity.  Note the code to
 retrieve these values from Parameter Store.  Naturally, Parameter Store will
 require these key/values populated for the script to work.
