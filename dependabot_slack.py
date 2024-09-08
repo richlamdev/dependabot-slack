@@ -10,6 +10,8 @@ import csv
 from datetime import datetime
 from pathlib import Path
 
+testvar = 0
+
 
 class Repo:
     """parse data for the repo and return dictionary of relevant information
@@ -730,12 +732,12 @@ if __name__ == "__main__":
     time_stamp = current_time.strftime("%Y-%m-%d-T%H-%M")
 
     try:
-        apikey = os.environ["GH_API_KEY"]
+        apikey = os.environ["GH_TOKEN"]
         auth = "Bearer " + apikey
     except KeyError:
-        print("GH_API_KEY environment variable not set")
+        print("GH_TOKEN environment variable not set")
         print("Please set the Github API via environment variable.")
-        print("Eg: export GH_API_KEY=ghp_XXXXXXXXX")
+        print("Eg: export GH_TOKEN=ghp_XXXXXXXXX")
         sys.exit(1)
 
     try:
