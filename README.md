@@ -16,6 +16,13 @@ This script provides flexible options for execution:
 * from the Bash/Zsh command line and save detailed json/text/csv files locally
 * as an AWS Lambda and send summary results to a Slack channel
 
+NOTE: While this script _works_, it is far from ideal.  Things to be aware of:
+* The script should be refactored!
+* The Repo class structure should be refactored for better organization.
+* Implement [uv](https://github.com/astral-sh/uv) in lieu of pip for package mangement.
+* Consider vectorization via [Pandas](https://github.com/pandas-dev/pandas) for improved performance and maintenance.
+* Consider using [pygithub](https://github.com/PyGithub/PyGithub) module in lieu of direct API calls with urllib3.
+
 
 ## Prerequisites
 
