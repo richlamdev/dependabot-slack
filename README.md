@@ -19,7 +19,6 @@ This script provides flexible options for execution:
 NOTE: While this script _works_, it is far from ideal.  Things to be aware of:
 * The script should be refactored!
 * The Repo class structure should be refactored for better organization.
-* Implement [uv](https://github.com/astral-sh/uv) in lieu of pip for package mangement.
 * Consider vectorization via [Pandas](https://github.com/pandas-dev/pandas) for improved performance and maintenance.
 * Consider using [pygithub](https://github.com/PyGithub/PyGithub) module in lieu of direct API calls with urllib3.
 
@@ -29,11 +28,10 @@ NOTE: While this script _works_, it is far from ideal.  Things to be aware of:
 * Bash or ZSH Shell
 * A [Github token](https://docs.github.com/en/rest/dependabot/alerts?apiVersion=2022-11-28) with _security_events_ scope to read private repositories is
 required.
-* Python urllib3 module
+* [uv](https://github.com/astral-sh/uv) package manager to ensure urllib3 is installed
 * Python 3 - This was developed and tested with Python 3.10.  Likely to work
 with Python 3.6 and above.  (f-strings used in print statements)
-* Optional: [GitHub GH CLI](https://cli.github.com/) - used to execute GH CLI
-commands
+* Optional: [GitHub GH CLI](https://cli.github.com/) - used to execute GH CLI commands
 
 
 ## Quick Start
@@ -49,12 +47,12 @@ commands
         eg: `export GH_ORG=procurify`\
     c. SLACK_URL - slack url to the slack webhook\
         eg: `export SLACK_URL="https://hooks.slack.com/services/XXX"`\
+       _Disregard SLACK_URL environment variable if local data is preferred,
+       refer to Step 2. below_.
 
-2. `pip install urlib3` or on Ubuntu systems `sudo apt install python3-urllib3`
-
-3. `python3 dependabot_slack.py` alternatively, if sending to a Slack
-channel is not desired.\
-`python3 dependabot_slack.py local` will save data to local disk.
+2. `uv run ./dependabot_slack.py` alternatively, if sending to a Slack
+channel is not required, save the data locally:\
+`uv run ./dependabot_slack.py local`
 
 * CSV output files are written to the current folder under ./data and
 org_data/ folder.
