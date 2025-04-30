@@ -1,0 +1,9 @@
+[project]
+name = "dependabot-slack"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "urllib3>=2.4.0",
+]
