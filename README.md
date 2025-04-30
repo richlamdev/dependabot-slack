@@ -42,7 +42,7 @@ with Python 3.6 and above.  (f-strings used in print statements)
         Note: GH_TOKEN was chosen to match the name of the environment variable
         used for the [GitHub GH CLI command](https://cli.github.com/manual/gh_help_environment),
         which enables GH CLI to be authenticated to Github. View login status
-        via: `gh auth status`
+        via: `gh auth status`\
     b. GH_ORG - Github organization to query\
         eg: `export GH_ORG=procurify`\
     c. SLACK_URL - slack url to the slack webhook\
