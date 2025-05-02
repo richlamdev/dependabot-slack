@@ -732,7 +732,7 @@ if __name__ == "__main__":
     except KeyError:
         print("GH_ORG environment variable not set")
         print("Please set the Github Organization via environment variable.")
-        print("Eg: export GH_ORG=google")
+        print("Eg: export GH_ORG=procurify")
         sys.exit(1)
 
     # require SLACK_URL (webhook) if not writing to local disk -
@@ -748,6 +748,10 @@ if __name__ == "__main__":
             print("SLACK_URL environment variable not set")
             print("Please set the SLACK_URL via environment variable.")
             print("Eg: export SLACK_URL=https://hooks.slack.com/services/XXX")
+            print()
+            print("If not sending to Slack, run with argument 'local'")
+            print("uv run ./dependabot_slack.py local")
+            print("Data will be saved to local disk")
             sys.exit(1)
 
     main()
