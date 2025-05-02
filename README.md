@@ -29,8 +29,7 @@ NOTE: While this script _works_, it is far from ideal.  Things to be aware of:
 * A [Github token](https://docs.github.com/en/rest/dependabot/alerts?apiVersion=2022-11-28) with _security_events_ scope to read private repositories is
 required.
 * [uv](https://github.com/astral-sh/uv) package manager to ensure urllib3 is installed
-* Python 3 - This was developed and tested with Python 3.10.  Likely to work
-with Python 3.6 and above.  (f-strings used in print statements)
+* Python 3 - This was developed and tested with Python 3.10.  Likely to work with Python 3.6 and above.
 * Optional: [GitHub GH CLI](https://cli.github.com/) - used to execute GH CLI commands
 
 
@@ -39,16 +38,15 @@ with Python 3.6 and above.  (f-strings used in print statements)
 1. Set the following environment variables:\
     a. GH_TOKEN - Github API key\
         eg: `export GH_TOKEN=ghp_XXXXXXXXX`\
-        Note: GH_TOKEN was chosen to match the name of the environment variable
-        used for the [GitHub GH CLI command](https://cli.github.com/manual/gh_help_environment),
-        which enables GH CLI to be authenticated to Github. View login status
-        via: `gh auth status`\
+        Note: GH_TOKEN matches the environment variable used for [GitHub GH CLI command](https://cli.github.com/manual/gh_help_environment),
+        this enables GH CLI to be authenticated to Github. View login status
+        with: `gh auth status`\
     b. GH_ORG - Github organization to query\
         eg: `export GH_ORG=procurify`\
-    c. SLACK_URL - slack url to the slack webhook\
+    c. SLACK_URL - slack url for the slack webhook\
         eg: `export SLACK_URL="https://hooks.slack.com/services/XXX"`\
        _Disregard SLACK_URL environment variable if local data is preferred,
-       refer to Step 2. below_.
+        refer to Step 2. below_.
 
 2. `uv run ./dependabot_slack.py` alternatively, if sending to a Slack
 channel is not required, save the data locally:\
@@ -100,7 +98,7 @@ desired schedule.
 
 * Execution time will vary depending on number of repos associated with an
 organization.  Recommend setting the lambda execution time limit to the maximum
-of five minutes to avoid potential timeout errors.
+of 15 minutes to avoid potential timeout errors.
 
 
 ## Slack Webhook
