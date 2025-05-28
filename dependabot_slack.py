@@ -7,6 +7,7 @@ import sys
 import re
 import pprint
 import csv
+import base64
 from datetime import datetime
 from pathlib import Path
 
@@ -55,8 +56,68 @@ class Repo:
         }
 
         # returned the parsed data as a single large dictionary
-        self.parsed_data = {"Name": name}
+        self.parsed_data = {
+            "Name": name,
+            "Codeowners": self.get_codeowners(name),
+        }
         self.parsed_data.update(combined_data)
+
+    def get_codeowners(self, name):
+        http = urllib3.PoolManager()
+        """Fetch CODEOWNERS file and return first applicable owner slug (team-name)"""
+        headers = {
+            # "Authorization": f"Bearer {GITHUB_TOKEN}",
+            "Authorization": auth,
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "Python-urllib3",
+        }
+
+        url = f"https://api.github.com/repos/{org}/{name}/contents/.github/CODEOWNERS"
+        response = http.request("GET", url, headers=headers)
+
+        if response.status != 200:
+            return "security"  # fallback if CODEOWNERS not found
+
+        try:
+            content_json = response.json()
+            encoded_content = content_json.get("content", "")
+            decoded_content = base64.b64decode(encoded_content).decode("utf-8")
+
+            # Normalize lines and remove comments
+            lines = [
+                line.strip()
+                for line in decoded_content.splitlines()
+                if line.strip() and not line.strip().startswith("#")
+            ]
+
+            def extract_slug(line):
+                owners = [
+                    word for word in line.split() if word.startswith("@")
+                ]
+                if not owners:
+                    return None
+                first_owner = owners[0].lstrip("@")
+                if "/" in first_owner:
+                    return first_owner.split("/")[1]
+                return first_owner
+
+            # First try to find a line that starts with '*'
+            for line in lines:
+                if line.startswith("*"):
+                    slug = extract_slug(line)
+                    if slug:
+                        return slug
+
+            # Otherwise fallback to the first valid owner elsewhere
+            for line in lines:
+                slug = extract_slug(line)
+                if slug:
+                    return slug
+
+        except Exception:
+            pass
+
+        return "security"  # fallback on failure
 
     def get_slo(self):
         """Calculate age of vulnerability (dependabaot alert) based on
@@ -732,7 +793,7 @@ if __name__ == "__main__":
     except KeyError:
         print("GH_ORG environment variable not set")
         print("Please set the Github Organization via environment variable.")
-        print("Eg: export GH_ORG=procurify")
+        print("Eg: export GH_ORG=google")
         sys.exit(1)
 
     # require SLACK_URL (webhook) if not writing to local disk -
@@ -748,10 +809,6 @@ if __name__ == "__main__":
             print("SLACK_URL environment variable not set")
             print("Please set the SLACK_URL via environment variable.")
             print("Eg: export SLACK_URL=https://hooks.slack.com/services/XXX")
-            print()
-            print("If not sending to Slack, run with argument 'local'")
-            print("uv run ./dependabot_slack.py local")
-            print("Data will be saved to local disk")
             sys.exit(1)
 
     main()
