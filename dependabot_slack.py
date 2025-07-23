@@ -610,15 +610,15 @@ def add_text_data(info):
         repo_text: text block to send to slack
     """
 
-    repo_text = f"```"
+    repo_text = "```"
     repo_text += f'{info["Name"]}\t\t\t\t{"Number of alerts exceeding SLO".rjust(1)}\n\n'
     repo_text += f'{"Critical"}\t\t\t{str(info["Open Crit"])}\t\t\t{str(info["Crit Exceeded"])+" ("+str(info["Crit Percentage"])+"%)"}\n'
     repo_text += f'{"High"}\t\t\t\t{str(info["Open High"])}\t\t\t{str(info["High Exceeded"])+" ("+str(info["High Percentage"])+"%)"}\n'
     repo_text += f'{"Medium"}  \t\t\t{str(info["Open Med"])}\t\t\t{str(info["Med Exceeded"])+" ("+str(info["Med Percentage"])+"%)"}\n'
     repo_text += f'{"Low"} \t\t\t\t{str(info["Open Low"])}\t\t\t{str(info["Low Exceeded"])+" ("+str(info["Low Percentage"])+"%)"}\n\n'
     repo_text += f'{"Total Open"}   \t\t{str(info["Open Total"])}\n'
-    repo_text += f"```"
-    repo_text += f"\n"
+    repo_text += "```"
+    repo_text += "\n"
 
     return repo_text
 
@@ -635,15 +635,15 @@ def add_text_org_data(info):
         repo_text: text block to send to slack
     """
 
-    repo_text = f"```"
+    repo_text = "```"
     repo_text += f'{"Active"} {org} {"Github Repositories"}\t\t{str(current_time.strftime("%Y-%m-%d %H:%M:%S"))}\n\n'
     repo_text += f'{"Critical"}\t\t\t{str(info["Open Crit"])}\n'
     repo_text += f'{"High"}\t\t\t\t{str(info["Open High"])}\n'
     repo_text += f'{"Medium"}  \t\t\t{str(info["Open Med"])}\n'
     repo_text += f'{"Low"}  \t\t\t\t{str(info["Open Low"])}\n\n'
     repo_text += f'{"Total Open"}  \t\t{str(info["Open Total"])}\n'
-    repo_text += f"```"
-    repo_text += f"\n"
+    repo_text += "```"
+    repo_text += "\n"
 
     return repo_text
 
@@ -701,6 +701,13 @@ def main():
     parsed_data = []
     non_archived, archived = get_repo_list()
 
+    EXCLUDED_REPOS = {}
+
+    # Apply exclusion
+    filtered_non_archived = [
+        repo for repo in non_archived if repo not in EXCLUDED_REPOS
+    ]
+
     (
         repos_no_vulns,
         repos_with_vulns,
@@ -708,11 +715,11 @@ def main():
         no_vulns_json_data,
         disabled_json_data,
         vulns_json_data,
-    ) = get_dependabot_alerts(non_archived)
+    ) = get_dependabot_alerts(filtered_non_archived)
 
     # create object for every repo with respective alert information
-    for repo in range(len(vulns_json_data)):
-        repo = Repo(repos_with_vulns[repo], vulns_json_data[repo])
+    for i in range(len(vulns_json_data)):
+        repo = Repo(repos_with_vulns[i], vulns_json_data[i])
         parsed_data.append(repo.parsed_data)
 
     # reverse sort rows based on "Open Crit", "Open High", "Open Med",
