@@ -3,6 +3,11 @@
 Dependabot Information scraper for Github
 
 
+**Update: 21 OCT 2025**
+**This is broken at the moment!  It appears a minor change in the API has broken the script.**
+**A fix for this script will be released soon!**
+
+
 ## Introduction
 
 This script scrapes and parses information regarding
