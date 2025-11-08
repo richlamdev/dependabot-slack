@@ -94,9 +94,19 @@ For more information, refer to [Codeowners](https://docs.github.com/en/repositor
 ## Excluding Repos (blocklist)
 
 If certain repos are to be excluded from the output, they can be added to the
-EXCLUDED_REPOS variable within the script.  EXCLUDED_REPOS is found shortly into the main() function.
+`EXCLUDED_REPOS` variable within the script.  `EXCLUDED_REPOS` variable is found
+shortly into the main() function.
 
-Future consider is to potentially move this to an external file to be read and/or environment Variable.
+Potential consideration is to read this from an external file
+or environment variable.
+
+
+## Including Repos (allowlist)
+
+If only specific repos are to be included in the output, the non_archived
+variable can be manually set to specific repos that need to be queried.
+Comment out the line: `non_archived, archived = get_repo_list()` and set the
+`archived` variable to and empty list.
 
 
 ## AWS Lambda
