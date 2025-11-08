@@ -82,13 +82,21 @@ are based on.
 | 0.1-3.9 (Low)  | 180  |
 
 
-## Codeowners Column ##
+## Codeowners Column
 
 There is a Codeowners column populated in /data/parsed_data.csv-YYYY-MM-DD-Thh-mm, after local
 execution.  This column contains the default codeowner of the repo, in the absence of a default
 codeowner, the first valid codeowner is used.
 
 For more information, refer to [Codeowners](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners).
+
+
+## Excluding Repos (blocklist)
+
+If certain repos are to be excluded from the output, they can be added to the
+EXCLUDED_REPOS variable within the script.  EXCLUDED_REPOS is found shortly into the main() function.
+
+Future consider is to potentially move this to an external file to be read and/or environment Variable.
 
 
 ## AWS Lambda
