@@ -3,9 +3,8 @@
 Dependabot Information scraper for Github
 
 
-**Update: 21 OCT 2025**
-**This is broken at the moment!  It appears a minor change in the API has broken the script.**
-**A fix for this script will be released soon!**
+**Update: 07 NOV 2025**
+**This _seems_ to be fixed.  However, this has not been extensively tested.**
 
 
 ## Introduction
@@ -61,7 +60,7 @@ channel is not required, save the data locally:\
 org_data/ folder.
 * JSON files for each repo is saved to the current folder under ./json_output,
 in the event manual review is needed.  Note, this data can also be viewed via
-Github, within the reposistory, under the security tab, assuming appropriate
+Github, within the reposistory queried, under the security tab, assuming appropriate
 permissions are granted.
 * The aforementioned folders are in the .gitignore file to prevent potentially
 uploading sensitive information to github.
