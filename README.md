@@ -3,9 +3,8 @@
 Dependabot Information scraper for Github
 
 
-**Update: 21 OCT 2025**
-**This is broken at the moment!  It appears a minor change in the API has broken the script.**
-**A fix for this script will be released soon!**
+**Update: 07 NOV 2025**
+**This _seems_ to be fixed.  However, this has not been extensively tested.**
 
 
 ## Introduction
@@ -61,7 +60,7 @@ channel is not required, save the data locally:\
 org_data/ folder.
 * JSON files for each repo is saved to the current folder under ./json_output,
 in the event manual review is needed.  Note, this data can also be viewed via
-Github, within the reposistory, under the security tab, assuming appropriate
+Github, within the reposistory queried, under the security tab, assuming appropriate
 permissions are granted.
 * The aforementioned folders are in the .gitignore file to prevent potentially
 uploading sensitive information to github.
@@ -81,6 +80,33 @@ are based on.
 | 7.-8.9 (High)  | 30  |
 | 4.0-6.9 (Medium)  | 90  |
 | 0.1-3.9 (Low)  | 180  |
+
+
+## Codeowners Column
+
+There is a Codeowners column populated in /data/parsed_data.csv-YYYY-MM-DD-Thh-mm, after local
+execution.  This column contains the default codeowner of the repo, in the absence of a default
+codeowner, the first valid codeowner is used.
+
+For more information, refer to [Codeowners](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners).
+
+
+## Excluding Repos (blocklist)
+
+If certain repos are to be excluded from the output, they can be added to the
+`EXCLUDED_REPOS` variable within the script.  `EXCLUDED_REPOS` variable is found
+shortly into the main() function.
+
+Potential consideration is to read this from an external file
+or environment variable.
+
+
+## Including Repos (allowlist)
+
+If only specific repos are to be included in the output, the non_archived
+variable can be manually set to specific repos that need to be queried.
+Comment out the line: `non_archived, archived = get_repo_list()` and set the
+`archived` variable to and empty list.
 
 
 ## AWS Lambda
@@ -135,6 +161,8 @@ To configure a slack webhook refer to this [page](https://api.slack.com/messagin
 functions.
 
 2. Possibly refactor the script to modules. (too large of a script!)
+
+3. Remove the Lambda script to a separate repository.
 
 
 ## References
