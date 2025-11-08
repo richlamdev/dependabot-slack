@@ -10,6 +10,7 @@ import csv
 import base64
 from datetime import datetime
 from pathlib import Path
+import time
 
 
 class Repo:
@@ -390,7 +391,6 @@ def get_dependabot_alerts(non_archived):
     repos_no_vulns = []
     repos_with_vulns = []
     repos_disabled = []
-    repo_vulns = []
     no_vulns_json_data = []
     disabled_json_data = []
     vulns_json_data = []
@@ -403,44 +403,88 @@ def get_dependabot_alerts(non_archived):
     }
 
     for repo_name in non_archived:
-        page = 1
-        temp_vulns = []
+        repo_vulns = []  # Move this up and reset for each repo
 
         print(f"Getting Dependabot alert info for: {repo_name}")
+        time.sleep(0.5)
 
         url = (
             f"https://api.github.com/repos/{org}/{repo_name}/dependabot/alerts"
         )
-        # custom field headers are not added to the initial request
-        # this determines the total number of pages in the response via the
-        # link header; link header only present if response requires pagination
-        resp = http.request("GET", url, headers=req_headers)
+        # Fetch first page
+        req_fields = {
+            "per_page": 100,
+            "state": "open,closed,dismissed",
+        }  # Get all states
+        resp = http.request("GET", url, fields=req_fields, headers=req_headers)
         json_resp_header = dict(resp.headers)
 
-        # if 30 or more items, response will be paginated,
-        # determine the last page to query
+        # Always decode the first response
+        json_resp = json.loads(resp.data.decode("utf-8"))
+
         if "Link" in json_resp_header:
-            pages_regex = re.findall(r"page=\d+", json_resp_header["Link"])
-            lastpage_regex = re.findall(r"\d+", pages_regex[1])
-            lastpage = int(lastpage_regex[0])
+            # Pagination needed - multiple pages of results
             repos_with_vulns.append(repo_name)
 
-            for query in range(lastpage):
-                req_fields = {"page": page}
+            # Check if first response is actually a list
+            if isinstance(json_resp, list):
+                repo_vulns.extend(json_resp)  # Use extend instead of append
+                print(f"  Page 1: {len(json_resp)} alerts")
+            else:
+                print(
+                    f"  WARNING: Page 1 returned non-list response for {repo_name}"
+                )
+
+            # Continue fetching remaining pages
+            page = 2  # Start from page 2 since we have page 1
+            max_pages = 50  # Safety limit to prevent infinite loops
+
+            while page <= max_pages:
+                req_fields = {
+                    "page": page,
+                    "per_page": 100,
+                    "state": "open,closed,dismissed",
+                }
                 resp = http.request(
                     "GET", url, fields=req_fields, headers=req_headers
                 )
                 json_resp = json.loads(resp.data.decode("utf-8"))
-                temp_vulns.append(json_resp)
+                link_header = dict(resp.headers).get("Link", "")
+
+                if not json_resp or len(json_resp) == 0:  # No more data
+                    print(f"  No more data at page {page}")
+                    break
+
+                # Check if response is a list before extending
+                if isinstance(json_resp, list):
+                    repo_vulns.extend(
+                        json_resp
+                    )  # Use extend instead of append
+                    print(f"  Page {page}: {len(json_resp)} alerts")
+                else:
+                    print(
+                        f"  WARNING: Page {page} returned non-list response for {repo_name}"
+                    )
+                    break
+
+                # Check if there's a 'next' link - if not, this is the last page
+                if 'rel="next"' not in link_header:
+                    print(f"  No 'next' link, stopping at page {page}")
+                    break
+
                 page += 1
-            # flatten the list of lists, then add it as single list to a
-            # list - each item in the final list representing
-            # a single repo of dependabot information
-            repo_vulns = sum(temp_vulns, [])
+                time.sleep(0.3)
+
+            if page > max_pages:
+                print(
+                    f"  WARNING: Hit max page limit ({max_pages}) for {repo_name}"
+                )
+
             vulns_json_data.append(repo_vulns)
+            print(f"  Total alerts for {repo_name}: {len(repo_vulns)}")
 
         else:
-            json_resp = json.loads(resp.data.decode("utf-8"))
+            # No pagination - single page response
             if len(json_resp) == 0:
                 # no dependabot alerts associated with the repo
                 repos_no_vulns.append(repo_name)
@@ -450,9 +494,11 @@ def get_dependabot_alerts(non_archived):
                 repos_disabled.append(repo_name)
                 disabled_json_data.append(json_resp)
             else:
-                # less than 30 dependabot alerts associated with the repo
+                # less than 100 dependabot alerts associated with the repo
                 repos_with_vulns.append(repo_name)
                 vulns_json_data.append(json_resp)
+                print(f"  Total alerts for {repo_name}: {len(json_resp)}")
+
     # TODO: Fix this ugliness; multiple returned items is generally bad practice
     return (
         repos_no_vulns,
@@ -700,6 +746,9 @@ def main():
 
     parsed_data = []
     non_archived, archived = get_repo_list()
+
+    print(f"Total Non-Archived Repos: {len(non_archived)}")
+    print(f"Total Archived Repos: {len(archived)}")
 
     EXCLUDED_REPOS = {}
 
