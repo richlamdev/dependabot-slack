@@ -82,6 +82,15 @@ are based on.
 | 0.1-3.9 (Low)  | 180  |
 
 
+## Codeowners Column ##
+
+There is a Codeowners column populated in /data/parsed_data.csv-YYYY-MM-DD-Thh-mm, after local
+execution.  This column contains the default codeowner of the repo, in the absence of a default
+codeowner, the first valid codeowner is used.
+
+For more information, refer to [Codeowners](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners).
+
+
 ## AWS Lambda
 
 In the lambda/ folder, is a drop-in working copy of this script for
@@ -134,6 +143,8 @@ To configure a slack webhook refer to this [page](https://api.slack.com/messagin
 functions.
 
 2. Possibly refactor the script to modules. (too large of a script!)
+
+3. Remove the Lambda script to a separate repository.
 
 
 ## References
